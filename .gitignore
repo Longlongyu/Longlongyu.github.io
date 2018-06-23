@@ -1,6 +1,5 @@
 /themes/*
 !/themes/hexo-theme-archer/
-!/themes/hexo-theme-archer/*
 .DS_Store
 Thumbs.db
 db.json
