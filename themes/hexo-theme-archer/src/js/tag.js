@@ -160,8 +160,6 @@ class SidebarMeta {
           that.postsArr = posts
           that.emitter.emit('DATA_FETCHED_SUCCESS')
         }
-      } else {
-        this.$currPostsContainer.remove()
       }
     }
     xhr.send()

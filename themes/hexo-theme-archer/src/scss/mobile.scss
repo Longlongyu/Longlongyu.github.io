@@ -2,19 +2,52 @@
 @import "_variables";
 
 // ========== common ========== //
-.profile,
 .toc-wrapper {
     display: none;
+}
+
+.site-intro-meta {
+    .intro-title{
+        font-size: 2rem !important;
+    }
+    .intro-subtitle {
+        font-size: 1.3rem !important;
+    }
 }
 
 .container {
     width: 100%;
     margin: 0rem auto;
     padding: 1rem 0 0 0;
+    flex-direction:column;
+    align-items: center;
+    .profile{
+        width: 70%;
+        .profile-avatar{
+            width: 60%;
+            border-radius: 50%;
+            margin: 0rem auto;
+        }
+        .profile-social {
+            display: none;
+        }
+        .friends,
+        .about-me {
+            text-align: center;
+            width: 60% !important;
+            margin: 0rem auto;
+            div,a{
+                font-size: 75%;
+                text-align: center;
+            }
+        }
+        margin-bottom: 1rem;
+    }
 }
 
 .footer {
-    padding-top: 0;
+    font-size: 80%;
+    padding-top: 5rem;
 }
 
 .post-page {
