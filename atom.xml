@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://longlongyu.github.io/"/>
-  <updated>2018-07-15T02:18:33.520Z</updated>
+  <updated>2018-07-18T09:57:00.804Z</updated>
   <id>https://longlongyu.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hexo-theme-Cxo</title>
+    <link href="https://longlongyu.github.io/2018/07/18/hexoThemeCxo/"/>
+    <id>https://longlongyu.github.io/2018/07/18/hexoThemeCxo/</id>
+    <published>2018-07-18T09:40:09.000Z</published>
+    <updated>2018-07-18T09:57:00.804Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/img/demo/demo.png" alt="Cxo"></p><p>如果你喜欢这款主题，可以访问GITHUB地址：<a href="https://github.com/Longlongyu/hexo-theme-Cxo" title="hexo-theme-Cxo" target="_blank" rel="noopener">点这里</a></p><h2 id="帮助"><a href="#帮助" class="headerlink" title="帮助"></a>帮助</h2><p>遇到任何使用上的问题，都可以向我留言。</p><p>感谢您的使用！</p><a id="more"></a>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/img/demo/demo.png&quot; alt=&quot;Cxo&quot;&gt;&lt;/p&gt;
+&lt;p&gt;如果你喜欢这款主题，可以访问GITHUB地址：&lt;a href=&quot;https://github.com/Longlongyu/hexo-theme-Cxo&quot; title=&quot;hexo-theme-Cxo&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;点这里&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;帮助&quot;&gt;&lt;a href=&quot;#帮助&quot; class=&quot;headerlink&quot; title=&quot;帮助&quot;&gt;&lt;/a&gt;帮助&lt;/h2&gt;&lt;p&gt;遇到任何使用上的问题，都可以向我留言。&lt;/p&gt;
+&lt;p&gt;感谢您的使用！&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="theme" scheme="https://longlongyu.github.io/tags/theme/"/>
+    
+      <category term="hexo" scheme="https://longlongyu.github.io/tags/hexo/"/>
+    
+  </entry>
   
   <entry>
     <title>使用Express来开发项目(1)</title>
