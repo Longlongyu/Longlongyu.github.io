@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://longlongyu.github.io/"/>
-  <updated>2018-07-30T09:43:23.587Z</updated>
+  <updated>2018-07-30T09:48:47.292Z</updated>
   <id>https://longlongyu.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://longlongyu.github.io/2018/07/30/html5Semantic/"/>
     <id>https://longlongyu.github.io/2018/07/30/html5Semantic/</id>
     <published>2018-07-30T07:18:33.000Z</published>
-    <updated>2018-07-30T09:43:23.587Z</updated>
+    <updated>2018-07-30T09:48:47.292Z</updated>
     
-    <content type="html"><![CDATA[<p>作为一名前端coder，或者正励志成为一名前端coder ，我们都知道HTML。HTML是W3C标准中结构化的标准语言，然而<br>在HTML5出现以前，我们一般采用DIV+CSS来布局我们的页面。<div>是无语义化的标签，大量使用这种标签会使我们的<br>文档结构不够明确，从引发了开发者会根据自身喜好来进行自定义标签导致的影响浏览器解析，不利于浏览器的爬虫和<br>机器地解析等诸多问题。</div></p><p>为了解决这些问题，HTML5中新增了很多新的语义化标签，并且定义了相关规范。</p><a id="more"></a><h1 id="语义化标签的优点"><a href="#语义化标签的优点" class="headerlink" title="语义化标签的优点"></a>语义化标签的优点</h1><p>引入语义化标签的好处主要有以下几点：</p><ul><li>使我们的网页结构更加明确，方便开发与维护</li><li>搜索引擎能更方便的识别页面的每个部分</li><li>服务了残障人士（方便了如屏幕阅读器、盲人阅读器等工具对页面的识别）</li><li>更加符合对W3C中的定义</li></ul><h1 id="HTML5-语义化标签"><a href="#HTML5-语义化标签" class="headerlink" title="HTML5 语义化标签"></a>HTML5 语义化标签</h1><p>我们常用<code>div</code>来表示页面章节,但<code>div</code>本身没有任何语义。而HTML5语义标签是一种我们仅通过标签名就能判断出该标<br>签内容的语义的标签。使我们更加直观的感受到网页的结构（看下图）。</p><p><img src="./html5.png" alt="HTML5 Semantic"></p><p>这样使用的HTML5语义标签，使两者的差距很直接的就显现出来了。（当然，具体用哪些标签怎么用，取决于你或你的团队）。</p><p>但这也并不是说明我们要鄙弃div标签。W3C定义了这些语义标签，却也不可能完全符合我们有时的设计目标，如果<br>随意使用这些标签，就会与我们的初衷相背。所以我们还是要用div的，就是因为div没有任何意义的元素，他<br>只是一个标签，仅仅是用来构建外观和结构。因此是最适合做容器的标签。</p><p>这也是div没有移除标准的原因，他依然能发挥出重要的作用。</p><p>点击这里查看→ <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/HTML5/HTML5_element_list" target="_blank" rel="noopener">w3c关于标签标准说明</a></p>]]></content>
+    <content type="html"><![CDATA[<p>作为一名前端coder，或者正励志成为一名前端coder ，我们都知道HTML。HTML是W3C标准中结构化的标准语言，然而<br>在HTML5出现以前，我们一般采用DIV+CSS来布局我们的页面。<div>是无语义化的标签，大量使用这种标签会使我们的<br>文档结构不够明确，从引发了开发者会根据自身喜好来进行自定义标签导致的影响浏览器解析，不利于浏览器的爬虫和<br>机器地解析等诸多问题。</div></p><p>为了解决这些问题，HTML5中新增了很多新的语义化标签，并且定义了相关规范。</p><a id="more"></a><h1 id="语义化标签的优点"><a href="#语义化标签的优点" class="headerlink" title="语义化标签的优点"></a>语义化标签的优点</h1><p>引入语义化标签的好处主要有以下几点：</p><ul><li>使我们的网页结构更加明确，方便开发与维护</li><li>搜索引擎能更方便的识别页面的每个部分</li><li>服务了残障人士（方便了如屏幕阅读器、盲人阅读器等工具对页面的识别）</li><li>更加符合对W3C中的定义</li></ul><h1 id="HTML5-语义化标签"><a href="#HTML5-语义化标签" class="headerlink" title="HTML5 语义化标签"></a>HTML5 语义化标签</h1><p>我们常用<code>div</code>来表示页面章节,但<code>div</code>本身没有任何语义。而HTML5语义标签是一种我们仅通过标签名就能判断出该标<br>签内容的语义的标签。使我们更加直观的感受到网页的结构（看下图）。</p><p><img src="/img/demo/html5.png" alt="HTML5 Semantic"></p><p>这样使用的HTML5语义标签，使两者的差距很直接的就显现出来了。（当然，具体用哪些标签怎么用，取决于你或你的团队）。</p><p>但这也并不是说明我们要鄙弃div标签。W3C定义了这些语义标签，却也不可能完全符合我们有时的设计目标，如果<br>随意使用这些标签，就会与我们的初衷相背。所以我们还是要用div的，就是因为div没有任何意义的元素，他<br>只是一个标签，仅仅是用来构建外观和结构。因此是最适合做容器的标签。</p><p>这也是div没有移除标准的原因，他依然能发挥出重要的作用。</p><p>点击这里查看→ <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/HTML5/HTML5_element_list" target="_blank" rel="noopener">w3c关于标签标准说明</a></p>]]></content>
     
     <summary type="html">
     
