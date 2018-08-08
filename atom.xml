@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://longlongyu.github.io/"/>
-  <updated>2018-07-30T09:48:47.292Z</updated>
+  <updated>2018-08-08T09:12:28.160Z</updated>
   <id>https://longlongyu.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JavaScript的垃圾回收机制</title>
+    <link href="https://longlongyu.github.io/2018/08/05/GarbageCollecation/"/>
+    <id>https://longlongyu.github.io/2018/08/05/GarbageCollecation/</id>
+    <published>2018-08-05T15:48:28.000Z</published>
+    <updated>2018-08-08T09:12:28.160Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>JavaScript</strong> 是一门很容易上手的语言。</p><p>他有着自动垃圾回收机制 <strong>(GC:Garbage Collecation)</strong> ，使我们撰写代码不用去手动去释放内存来管理和分配内存。因为这些全由 <strong>JavaScript</strong> 的 <strong>GC</strong> 来帮我们完成了，我们只需要快乐的敲打代码就好了。</p><p>然而， <strong>JavaScript</strong> 的 <strong>GC</strong> 虽然很便利，却也埋下了诸多隐患。例如，内存泄漏就是一个我们常常遇见的问题，让很多新手程序员对此一头雾水。而如果你了解了 <strong>JavaScript</strong> 的垃圾回收机制，你就能更好的避免和解决此类的问题，从而达到性能的优化。</p><a id="more"></a><h1 id="JavaScript-回收机制的原理"><a href="#JavaScript-回收机制的原理" class="headerlink" title="JavaScript 回收机制的原理"></a><strong>JavaScript</strong> 回收机制的原理</h1><p><strong>JavaScript</strong> 的垃圾回收机制是必要的，因为每次创建字符串、数组或对象时，<strong>JavaScript</strong> 的解释器并须从系统中分配内存来存储这些数据。而如果不释放这些数据，就会致使内存被过快消耗完，从而导致系统崩溃。</p><p><strong>JavaScript</strong> 垃圾回收的机制很简单: 就是在内存中找出那些不再使用的变量，然后将其占用的内存释放。</p><p>但是，这个过程却不是实时的。因为如果要时刻检测变量的状态，无疑会带来巨大的内存开销。为此， <strong>JavaScript</strong> 会周期性的进行一次检测，以此来释放那些已不被使用的内存。</p><h1 id="具体行为"><a href="#具体行为" class="headerlink" title="具体行为"></a>具体行为</h1><p>目前各大浏览器通常采用以下两种垃圾回收机制，来回收我们的内存，它们分别是: 标记清楚法和引用计数法。</p><h2 id="标记清楚法"><a href="#标记清楚法" class="headerlink" title="标记清楚法"></a>标记清楚法</h2><p>这是 <strong>JavaScript</strong> 中最常见的垃圾回收方式。当变量进入执行环境时，就标记这个变量为”进入环境”，从逻辑意义上来说，在执行环境中的变量并不需要我们去回收它的内存，因为只要执行流进入相应的环境，就有可能会被使用。而当它们离开环境时，则我们就可以回收这些内存，所以将其标记为”离开环境”。以方便在后面的步骤中释放它们。</p><p>之后在垃圾回收机制在执行时，会给内存中的所有变量加上标记。然后，去掉环境中的变量以及被环境中变量所引用的标记。而此外被加上标记的标记的变量，都视为待删除的变量，环境中的变量已经无法访问到这些变量了。</p><p>最后将那些标记的值销毁，回收其占用的内存，完成垃圾回收工作。</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">0</span>;<span class="comment">//进入执行环境，被标记为"进入环境";</span></span><br><span class="line">&#125;</span><br><span class="line">test();<span class="comment">//执行 执行完后，a被标记为"离开环境"，等待释放</span></span><br></pre></td></tr></table></figure><h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><p>这是一种不太常见的垃圾回收策略。</p><p>引用计数的策略是跟踪记录每个值被引用的次数。当声明了一个变量并将一个引用类型赋值给该变量时，则这个值的引用次数就是1。相反，如果包含对这个值引用的变量又取得了另外一个值，则这个值的引用次数就减1。当这个引用次数变成0时，则说明没有办法再访问这个值了，因而垃圾回收机制就可以判断这个值为可回收。在下次垃圾回收机制在执行时，它会释放那些引用次数为0的值所占的内存。</p><p>不过该策略有一个缺陷:</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> A = <span class="keyword">new</span> A();</span><br><span class="line"><span class="keyword">var</span> B = <span class="keyword">new</span> B();</span><br><span class="line">A.a = B;</span><br><span class="line">B.b = A;<span class="comment">// 此时A、B引用次数为2</span></span><br></pre></td></tr></table></figure><p>可以看到，由于对象A、B都有属性互相引用，从而导致引用次数不会为0，所以垃圾回收机制不会去回收此内存，从而导致了内存泄漏。</p><p>因此现在基本上所有浏览器都采用第一种方式来清楚内存。</p><h1 id="GC-的缺陷"><a href="#GC-的缺陷" class="headerlink" title="GC 的缺陷"></a>GC 的缺陷</h1><p>和其他语言一样，<strong>javascript</strong> 的 <strong>GC</strong> 策略也无法避免一个问题:</p><p><strong>GC</strong> 执行时，会停止响应其他操作。</p><p>虽然这是为了安全考虑，但也因此使 <strong>Javascript</strong> 的 <strong>GC</strong> 在 <strong>100ms</strong> 甚至以上，对一般的应用还好，但如果是 <strong>JS</strong> 游戏，动画等对连贯性要求比较高的应用，就会带来麻烦。</p><p>这也是目前 <strong>GC</strong> 引擎需要优化的点。</p><h1 id="GC优化策略"><a href="#GC优化策略" class="headerlink" title="GC优化策略"></a>GC优化策略</h1><p>目前有两种 <strong>GC</strong> 优化策略:</p><h2 id="分代回收"><a href="#分代回收" class="headerlink" title="分代回收"></a>分代回收</h2><p>这个方法参考了 <strong>Java</strong> 的回收策略。就是通过区分对象的状态“临时”，还是“持久”；多回收“临时对象”区，少回收“持久对象”区，减少每次需遍历的对象，从而减少每次 <strong>GC</strong> 的耗时。</p><h2 id="增量GC"><a href="#增量GC" class="headerlink" title="增量GC"></a>增量GC</h2><p>这个方案的思想很简单，就是“每次处理一点，下次再处理一点”，如此类推。</p><p>这种方案，虽然耗时短，但中断较多，带来了上下文切换频繁的问题。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;JavaScript&lt;/strong&gt; 是一门很容易上手的语言。&lt;/p&gt;
+&lt;p&gt;他有着自动垃圾回收机制 &lt;strong&gt;(GC:Garbage Collecation)&lt;/strong&gt; ，使我们撰写代码不用去手动去释放内存来管理和分配内存。因为这些全由 &lt;strong&gt;JavaScript&lt;/strong&gt; 的 &lt;strong&gt;GC&lt;/strong&gt; 来帮我们完成了，我们只需要快乐的敲打代码就好了。&lt;/p&gt;
+&lt;p&gt;然而， &lt;strong&gt;JavaScript&lt;/strong&gt; 的 &lt;strong&gt;GC&lt;/strong&gt; 虽然很便利，却也埋下了诸多隐患。例如，内存泄漏就是一个我们常常遇见的问题，让很多新手程序员对此一头雾水。而如果你了解了 &lt;strong&gt;JavaScript&lt;/strong&gt; 的垃圾回收机制，你就能更好的避免和解决此类的问题，从而达到性能的优化。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="javascript" scheme="https://longlongyu.github.io/tags/javascript/"/>
+    
+      <category term="garbage collecation" scheme="https://longlongyu.github.io/tags/garbage-collecation/"/>
+    
+      <category term="learn" scheme="https://longlongyu.github.io/tags/learn/"/>
+    
+  </entry>
   
   <entry>
     <title>关于HTML5语义化</title>

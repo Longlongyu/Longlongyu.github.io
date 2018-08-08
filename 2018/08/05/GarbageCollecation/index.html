@@ -1,0 +1,135 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Longlongyu"><meta name="renderer" content="webkit"><meta name="copyright" content="Longlongyu"><meta name="keywords" content="Longlongyu的个人站"><meta name="description" content="null"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>JavaScript的垃圾回收机制 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/Longlongyu" target="_black">friendB</a></span><span><a href="//github.com/Longlongyu" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a><a href="/tags">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a><a href="/tags">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">JavaScript的垃圾回收机制</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2018/08/08</span></span><span class="busuanzi-pv" id="busuanzi_container_page_pv"><i class="post-intro-calendar fa fa-user-o"></i><span id="busuanzi_value_page_pv"></span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="javascript"> javascript</a><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="garbage collecation"> garbage collecation</a><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="learn"> learn</a></span></div><div class="post-intro-read"><span> Word count: <span class="post-count">1,279</span> | Reading time: <span class="post-count">4</span>min</span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p><strong>JavaScript</strong> 是一门很容易上手的语言。</p>
+<p>他有着自动垃圾回收机制 <strong>(GC:Garbage Collecation)</strong> ，使我们撰写代码不用去手动去释放内存来管理和分配内存。因为这些全由 <strong>JavaScript</strong> 的 <strong>GC</strong> 来帮我们完成了，我们只需要快乐的敲打代码就好了。</p>
+<p>然而， <strong>JavaScript</strong> 的 <strong>GC</strong> 虽然很便利，却也埋下了诸多隐患。例如，内存泄漏就是一个我们常常遇见的问题，让很多新手程序员对此一头雾水。而如果你了解了 <strong>JavaScript</strong> 的垃圾回收机制，你就能更好的避免和解决此类的问题，从而达到性能的优化。</p>
+<a id="more"></a>
+<h1 id="JavaScript-回收机制的原理"><a href="#JavaScript-回收机制的原理" class="headerlink" title="JavaScript 回收机制的原理"></a><strong>JavaScript</strong> 回收机制的原理</h1><p><strong>JavaScript</strong> 的垃圾回收机制是必要的，因为每次创建字符串、数组或对象时，<strong>JavaScript</strong> 的解释器并须从系统中分配内存来存储这些数据。而如果不释放这些数据，就会致使内存被过快消耗完，从而导致系统崩溃。</p>
+<p><strong>JavaScript</strong> 垃圾回收的机制很简单: 就是在内存中找出那些不再使用的变量，然后将其占用的内存释放。</p>
+<p>但是，这个过程却不是实时的。因为如果要时刻检测变量的状态，无疑会带来巨大的内存开销。为此， <strong>JavaScript</strong> 会周期性的进行一次检测，以此来释放那些已不被使用的内存。</p>
+<h1 id="具体行为"><a href="#具体行为" class="headerlink" title="具体行为"></a>具体行为</h1><p>目前各大浏览器通常采用以下两种垃圾回收机制，来回收我们的内存，它们分别是: 标记清楚法和引用计数法。</p>
+<h2 id="标记清楚法"><a href="#标记清楚法" class="headerlink" title="标记清楚法"></a>标记清楚法</h2><p>这是 <strong>JavaScript</strong> 中最常见的垃圾回收方式。当变量进入执行环境时，就标记这个变量为”进入环境”，从逻辑意义上来说，在执行环境中的变量并不需要我们去回收它的内存，因为只要执行流进入相应的环境，就有可能会被使用。而当它们离开环境时，则我们就可以回收这些内存，所以将其标记为”离开环境”。以方便在后面的步骤中释放它们。</p>
+<p>之后在垃圾回收机制在执行时，会给内存中的所有变量加上标记。然后，去掉环境中的变量以及被环境中变量所引用的标记。而此外被加上标记的标记的变量，都视为待删除的变量，环境中的变量已经无法访问到这些变量了。</p>
+<p>最后将那些标记的值销毁，回收其占用的内存，完成垃圾回收工作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">0</span>;<span class="comment">//进入执行环境，被标记为"进入环境";</span></span><br><span class="line">&#125;</span><br><span class="line">test();<span class="comment">//执行 执行完后，a被标记为"离开环境"，等待释放</span></span><br></pre></td></tr></table></figure>
+<h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><p>这是一种不太常见的垃圾回收策略。</p>
+<p>引用计数的策略是跟踪记录每个值被引用的次数。当声明了一个变量并将一个引用类型赋值给该变量时，则这个值的引用次数就是1。相反，如果包含对这个值引用的变量又取得了另外一个值，则这个值的引用次数就减1。当这个引用次数变成0时，则说明没有办法再访问这个值了，因而垃圾回收机制就可以判断这个值为可回收。在下次垃圾回收机制在执行时，它会释放那些引用次数为0的值所占的内存。</p>
+<p>不过该策略有一个缺陷:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> A = <span class="keyword">new</span> A();</span><br><span class="line"><span class="keyword">var</span> B = <span class="keyword">new</span> B();</span><br><span class="line">A.a = B;</span><br><span class="line">B.b = A;<span class="comment">// 此时A、B引用次数为2</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，由于对象A、B都有属性互相引用，从而导致引用次数不会为0，所以垃圾回收机制不会去回收此内存，从而导致了内存泄漏。</p>
+<p>因此现在基本上所有浏览器都采用第一种方式来清楚内存。</p>
+<h1 id="GC-的缺陷"><a href="#GC-的缺陷" class="headerlink" title="GC 的缺陷"></a>GC 的缺陷</h1><p>和其他语言一样，<strong>javascript</strong> 的 <strong>GC</strong> 策略也无法避免一个问题:</p>
+<p><strong>GC</strong> 执行时，会停止响应其他操作。</p>
+<p>虽然这是为了安全考虑，但也因此使 <strong>Javascript</strong> 的 <strong>GC</strong> 在 <strong>100ms</strong> 甚至以上，对一般的应用还好，但如果是 <strong>JS</strong> 游戏，动画等对连贯性要求比较高的应用，就会带来麻烦。</p>
+<p>这也是目前 <strong>GC</strong> 引擎需要优化的点。</p>
+<h1 id="GC优化策略"><a href="#GC优化策略" class="headerlink" title="GC优化策略"></a>GC优化策略</h1><p>目前有两种 <strong>GC</strong> 优化策略:</p>
+<h2 id="分代回收"><a href="#分代回收" class="headerlink" title="分代回收"></a>分代回收</h2><p>这个方法参考了 <strong>Java</strong> 的回收策略。就是通过区分对象的状态“临时”，还是“持久”；多回收“临时对象”区，少回收“持久对象”区，减少每次需遍历的对象，从而减少每次 <strong>GC</strong> 的耗时。</p>
+<h2 id="增量GC"><a href="#增量GC" class="headerlink" title="增量GC"></a>增量GC</h2><p>这个方案的思想很简单，就是“每次处理一点，下次再处理一点”，如此类推。</p>
+<p>这种方案，虽然耗时短，但中断较多，带来了上下文切换频繁的问题。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://longlongyu.github.io">Longlongyu</a></p><p> <span>Link:  </span><a href="https://longlongyu.github.io/2018/08/05/GarbageCollecation/">https://longlongyu.github.io/2018/08/05/GarbageCollecation/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2018/07/30/html5Semantic/" title="关于HTML5语义化"><span>NextPost ></span><br><span class="nextTitle">关于HTML5语义化</span></a><div class="clear"></div></div><div id="comment"><div id="disqus_thread"></div><script>var unused = null;
+var disqus_config = function () {
+  this.page.url = 'https://longlongyu.github.io/2018/08/05/GarbageCollecation/';
+  this.page.identifier = '2018/08/05/GarbageCollecation/';
+  this.page.title = 'JavaScript的垃圾回收机制';
+}
+var d = document, s = d.createElement('script');
+s.src = "https://" + 'longlongyu' +".disqus.com/embed.js";
+s.setAttribute('data-timestamp', '' + +new Date());
+(d.head || d.body).appendChild(s);</script></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JavaScript-回收机制的原理"><span class="toc-number">1.</span> <span class="toc-text">JavaScript 回收机制的原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#具体行为"><span class="toc-number">2.</span> <span class="toc-text">具体行为</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#标记清楚法"><span class="toc-number">2.1.</span> <span class="toc-text">标记清楚法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#引用计数法"><span class="toc-number">2.2.</span> <span class="toc-text">引用计数法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC-的缺陷"><span class="toc-number">3.</span> <span class="toc-text">GC 的缺陷</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC优化策略"><span class="toc-number">4.</span> <span class="toc-text">GC优化策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#分代回收"><span class="toc-number">4.1.</span> <span class="toc-text">分代回收</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增量GC"><span class="toc-number">4.2.</span> <span class="toc-text">增量GC</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
