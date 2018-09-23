@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://longlongyu.github.io/"/>
-  <updated>2018-08-08T09:12:28.160Z</updated>
+  <updated>2018-09-23T02:20:54.335Z</updated>
   <id>https://longlongyu.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>摘要图片测试</title>
+    <link href="https://longlongyu.github.io/2018/09/23/photosTest/"/>
+    <id>https://longlongyu.github.io/2018/09/23/photosTest/</id>
+    <published>2018-09-23T01:15:14.000Z</published>
+    <updated>2018-09-23T02:20:54.335Z</updated>
+    
+    <content type="html"><![CDATA[<p>这是测试用文章。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;这是测试用文章。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="test" scheme="https://longlongyu.github.io/tags/test/"/>
+    
+  </entry>
   
   <entry>
     <title>JavaScript的垃圾回收机制</title>
